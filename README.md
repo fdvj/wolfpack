@@ -23,4 +23,4 @@ describe('MyModel', function(){
 });
 ```
 
-Work in Progress
+## Work in Progress
