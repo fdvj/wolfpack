@@ -1,5 +1,5 @@
 {
-  "name": "Wolfpack",
+  "name": "wolfpack",
   "version": "0.1.0",
   "description": "SailsJS Model Testing Library",
   "main": "index.js",
@@ -29,9 +29,10 @@
     "grunt-jasmine-node": "~0.1.0",
     "grunt-jasmine-node-coverage": "~0.1.4",
     "glob": "~3.2.1",
-    "grunt-open": "~0.2.0",
+    "grunt-open": "~0.2.0"
+  },
+  "dependencies": {
     "sinon": "^1.9.0",
-    "waterline": "^0.9.16",
-    "q": "^1.0.1"
+    "waterline": "^0.9.16"
   }
 }
