@@ -48,7 +48,9 @@ module.exports = function(grunt) {
           runs: true,
           __dirname: true,
           window: true,
-          setTimeout: true
+          setTimeout: true,
+          GLOBAL: true,
+          WOLFPACK: true
         }
       }
     },

@@ -7,6 +7,6 @@ module.exports = {
     }
   },
   modelMethod: function() {
-    return true
+    return true;
   }
 };

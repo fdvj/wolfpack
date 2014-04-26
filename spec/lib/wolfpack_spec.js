@@ -5,7 +5,7 @@ describe('Wolfpack', function(){
   describe('when called with an argument', function(){
     it("should receive either an object or a path to the model", function(){
       var passing_obj = function() {
-        wolfpack({name: 'test'})
+        wolfpack({name: 'test'});
       };
       var passing_str = function() {
         wolfpack(__dirname + '/../fixtures/Model');
@@ -191,7 +191,7 @@ describe('Wolfpack', function(){
 
     it("if there is a problem during instantiation, it should throw it", function(){
       var failing = function() {
-        wolfpack(new Array());
+        wolfpack([]);
       };
       expect(failing).toThrow();
     });
