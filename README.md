@@ -323,7 +323,7 @@ var sinon = require('sinon');
 // Lets instantiate the model globally
 global.Chatroom = wolpack('path_to_models/Chatroom'); // now we can access it anywhere as Chatroom
 
-var ChatController = require('path_to_controllers'/ChatController);
+var ChatController = require('path_to_controllers/ChatController');
 
 var request = {
   params: {
@@ -378,7 +378,7 @@ var req = {};
 var res = {};
 
 // Lets instantiate the model globally
-global.Model = wolpack('path_to_models/Model');
+global.Model = wolfpack('path_to_models/Model');
 
 var SampleController = require('path_to_controllers/SampleController');
 
@@ -414,7 +414,7 @@ var sinon = require('sinon');
 
 global.Chatroom = wolpack('path_to_models/Chatroom');
 
-var ChatController = require('path_to_controllers'/ChatController);
+var ChatController = require('path_to_controllers/ChatController');
 
 var request = {
   params: {
@@ -453,6 +453,9 @@ describe('ChatController', function(){
     it("should return a HTTP 200 response if the user was added successfully", function(){
       // Run first part of test asynchronously (jasmine function)
       runs(function(){
+        // Lets mock some results
+        wolfpack().setFindResults({id: 1, room_name: 'awesome', users:[1,2,3]});
+        // Now test
         ChatController.addUser(request, response);
       });
 
@@ -470,7 +473,7 @@ describe('ChatController', function(){
     // Testing for 403 should be the same as above, but we will mock an error this time
     it("should return a HTTP 403 response if the user cannot be added", function(){
       // First, lets mock the error
-      wolfpack.setErrors('You broke the internet');
+      wolfpack().setErrors('You broke the internet');
       
       // Lets run our action.
       runs(function(){
@@ -563,14 +566,23 @@ describe("Chatroom Class", function(){
     });
 
     it("needs to find the right room where to add the user", function(){
-      Chatroom.addUser('myself', 'awesome');
-      // Lets make sure it looked for the correct room
-      expect(Chatroom.findOne.lastCall.args[0].room_name).toBe('awesome')
+      // This is an async operation, so treat it accordingly
+      runs(function(){
+        Chatroom.addUser('myself', 'awesome', callback);
+      });
+      
+      waitsFor(function(){
+        return callback.called;
+      });
+
+      runs(function(){
+        // Lets make sure it looked for the correct room
+        expect(Chatroom.findOne.firstCall.args[0].room_name).toBe('awesome')
+      });
+      
     });
 
     it("if it does not find the room, it should return an error to the callback", function(){
-      // This is an async operation, so treat it accordingly
-
       // No need to mock as no results set means it will be empty by default
       
       // Run async
