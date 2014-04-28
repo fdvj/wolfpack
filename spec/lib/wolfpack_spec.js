@@ -93,6 +93,12 @@ describe('Wolfpack', function(){
       return ready === true;
     }
 
+    function asyncReset() {
+      ready = false;
+      data = null;
+      errors = null;
+    }
+
     beforeEach(function(){
       fixture = {name: 'My Name', date: new Date()};
       data = null;
@@ -334,6 +340,64 @@ describe('Wolfpack', function(){
 
       runs(function(){
         expect(errors).not.toBeDefined();
+      });
+    });
+
+    it("should provide a way for testing if a CRUD operation was performed in the adapter", function(){
+      wolfpack().resetSpies();
+      var spy = wolfpack().spy('find');
+      runs(function(){
+        Model.findOne(1).done(async);
+      });
+
+      waitsFor(asyncReady);
+
+      runs(function(){
+        expect(spy.called).toBeTruthy();
+        // Test if the other CRUD spies have been set
+        expect(wolfpack().spy('create').called).toBeDefined();
+        expect(wolfpack().spy('update').called).toBeDefined();
+        expect(wolfpack().spy('destroy').called).toBeDefined();
+      });
+    });
+
+    it("should provide a way for individually resetting CRUD spies", function(){
+      var spy = wolfpack().spy('find');
+      runs(function(){
+        Model.findOne(1).done(async);
+      });
+
+      waitsFor(asyncReady);
+
+      runs(function(){
+        // Reset the spy and see if it resetted
+        wolfpack().resetSpy('find');
+        expect(spy.called).toBeFalsy();
+      });
+    });
+
+    it("should provide a way for resetting all CRUD spies at once", function(){
+      var findSpy = wolfpack().spy('find');
+      var createSpy = wolfpack().spy('create');
+
+      runs(function(){
+        Model.findOne(1).done(async);
+      });
+
+      waitsFor(asyncReady);
+
+      runs(function(){
+        // Reset async to execute another call
+        asyncReset();
+        Model.create({name: 'test'}).done(async);
+      });
+
+      waitsFor(asyncReady);
+
+      runs(function(){
+        wolfpack().resetSpies();
+        expect(findSpy.called).toBeFalsy();
+        expect(createSpy.called).toBeFalsy();
       });
     });
 

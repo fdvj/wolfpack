@@ -669,7 +669,9 @@ describe("Chatroom Class", function(){
 
 Really long test that one, especially the last part.  However, are you may soon be noticing, we are achieving 100% test coverage, which was something really hard to do before.
 
-We still need to test the instance method.  This is one way to do it:
+We still need to test the instance method.  All instances get the save method. We could try and test the save method, but since no parameters are passed to it, we cannot be actually sure if it is creating or updating a record.
+
+Wolfpack provides the `spy` method which allows us to view CRUD operations happening in the adapter. That way we can test if the correct operation is being performed, and if the correct data is being passed to it. This is one way to do it:
 
 ```javascript
 var wolfpack = require('wolfpack');
@@ -684,7 +686,7 @@ describe("Chatroom instance", function(){
   var Chatroom = wolfpack('path_to_models/Chatroom');
 
   // Setup async testing pattern
-  // (this is something I use to make async testing easier)
+  // (this is a pattern I use to make async testing easier)
   var ready, model;
 
   function async(err, results) {
@@ -718,7 +720,17 @@ describe("Chatroom instance", function(){
       // Now we have our model instantiated
       runs(function(){
         model.addUser('test', callback);
-        // We sho
+      });
+
+      // Lets wait for the callback to be executed
+      waitsFor(function(){
+        return callback.called;
+      });
+
+      // Now lets see if our chatroom was updated
+      runs(function(){
+        var update = wolfpack().spy('update');
+        expect(update.lastCall.args[2].users).toEqual([1,2,3,4,'test']);
       });
     });
   });
