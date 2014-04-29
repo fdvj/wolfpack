@@ -252,6 +252,84 @@ When you set an error, just as the fake result methods, it will be set for all d
 
 To stop/clear the errors, use the `clearErrors` method.
 
+### wolfpack().clearErrors()
+
+When you no longer want the to fake errors, you can call the `clearErrors` method which will stop sending errors to your model calls.
+
+```javascript
+var wolfpack = require('wolfpack');
+
+var MyModel = wolfpack('path_to_app/api/models/MyModel');
+
+// Lets fake a db error now
+wolfpack().setErrors('DB_CONNECTION_ERROR');
+
+// Now lets reset it
+wolfpack().clearErrors();
+
+MyModel.findOne(1).done(function(err, results){
+  // Now we should get results again
+});
+```
+
+### wolfpack().spy('find|create|update|destroy')
+
+There might be situations in which we need to know if a certain CRUD operation is being performed.  For example, when calling the save method of a model, we want to be sure that the proper parameters are being called on save.  In those scenarios, it is useful to test what update operation is happening in the adapter.
+
+Wolfpack provides the `spy` method which in allows spying all four CRUD operations in the adapter.  As the argument, you send which operation you want to check.  The available operations are `find`, `create`, `update`, and `destroy`.
+
+```javascript
+var wolfpack = require('wolfpack');
+
+var MyModel = wolfpack('path_to_app/api/models/MyModel');
+
+// Lets spy on the create
+var spy = wolfpack().spy('create');
+
+wolfpack().create({name: 'test'}).done(function(err, results){
+  // Lets see if the parameters were sent correctly
+  return spy.calledWith({name: 'test'}); // returns true
+});
+```
+
+### wolfpack().resetSpy('find|create|update|destroy')
+
+Since in wolfpack all operations are spied upon, including CRUDs, there might be some cases in which you need your CRUD spy to be set to its beginning value for easier testing. For those cases you can use the `resetSpy` method.
+
+```javascript
+var wolfpack = require('wolfpack');
+
+var MyModel = wolfpack('path_to_app/api/models/MyModel');
+
+// Lets spy on the create
+var spy = wolfpack().spy('create');
+
+wolfpack().create({name: 'test'}).done(function(err, results){
+  spy.called; // returns true
+  wolfpack().resetSpy('create');
+  spy.called; // returns false
+});
+```
+
+### wolfpack().resetSpies()
+
+The `resetSpies` methods resets all CRUD spies at once, so you don't have to call them one by one.
+
+```javascript
+var wolfpack = require('wolfpack');
+
+var MyModel = wolfpack('path_to_app/api/models/MyModel');
+
+// Lets spy on the create
+var spy = wolfpack().spy('create');
+
+wolfpack().create({name: 'test'}).done(function(err, results){
+  spy.called; // returns true
+  wolfpack().resetSpies();
+  spy.called; // returns false
+});
+```
+
 ## Examples
 
 ### Mocking Model Results
@@ -885,5 +963,4 @@ describe("Chatroom instance", function(){
     });
   });
 });
-
 ```
