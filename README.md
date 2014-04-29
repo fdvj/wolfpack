@@ -104,6 +104,156 @@ This will in return give you an Instantiated model you can use to test the model
 
 The best part of this is that wolfpack, by default, spies on ALL methods, whether they were provided by Sails, you or your instance. The spies are provided by SinonJS, which therefore lets you know if a given method is called or not, with what it was called, etc. To know what properties and methods are available for your spies, please read the [SinonJS spies documentation](http://sinonjs.org/docs/#spies-api).
 
+## API
+
+### wolfpack('path_to_model')
+
+The wolfpack constructor allows you to instantiate a spied upon Sails model. You use by calling `wolfpack('path_to_model' || object)` and pass it either a string with the location of the model, or an object from which to build the model. All class and instance methods are spied on with [SinonJS spies](http://sinonjs.org/docs/#spies-api). Once instantiated, you can make your usual model calls.
+
+```javascript
+var wolfpack = require('wolfpack');
+
+var MyModel = wolfpack('path_to_app/api/models/MyModel');
+
+MyModel.find({name: 'test'}).done(function(err, results){
+  // ... more code ...
+});
+
+For testing ccontrollers, you instantiate your model globally as Sails does on the background, like this:
+
+```javascript
+var wolfpack = require('wolfpack');
+
+global.MyModel = wolfpack('path_to_app/api/models/MyModel');
+
+// You can now load your controller and it will have access to your wolfpack instantiated model
+var MyController = require('path_to_app/api/controllers/MyController');
+```
+
+For more information and examples on how to test, please go forward and read the examples sections, were we present several samples on how to use wolpack to test controllers, model classes, and instances of models.
+
+### wolfpack().setFindResults(object || array of objects)
+
+The `wolfpack().setFindResults` allows you to mock/fake data coming from the database. In other words, you can fake data coming from the database, and Sails will treat it as real data and build and instance from it (or not).
+
+To fake the data, use `wolfpack().setFindResults(results)` where `results` is an object or an array of objects with the response "coming" from the database. Please notice that __no arguments__ are passed to the `wolfpack` function.
+
+```javascript
+var wolfpack = require('wolfpack');
+
+var MyModel = wolfpack('path_to_app/api/models/MyModel');
+
+// Lets fake data from the db
+wolfpack().setFindResults({name: 'John'});
+
+MyModel.find({id:1}).done(function(err, results){
+  // results will be {name: 'John'}
+});
+
+```
+
+Please note, if you set any results with the `wolfpack().setFindResults` method, __all future find calls to any model__ will return those results. If you call it to set other results, then those results will always be returned, and so on. To stop sending those fake results, use the `wolfpack().clearResults` method.
+
+### wolfpack().setCreateResults(object || array of objects)
+
+Just as the `wolfpack().setFindResults`, the `wolfpack().createResults` method will allow you to set the fake db response for any create operation. As the argument, you pass an object or array of objects for the response you want.
+
+```javascript
+var wolfpack = require('wolfpack');
+
+var MyModel = wolfpack('path_to_app/api/models/MyModel');
+
+// Lets fake data from the db
+wolfpack().setCreateResults({name: 'John'});
+
+MyModel.create({name: 'Doe'}).done(function(err, results){
+  // Results will be {name: 'John', updatedAt: someDate, createdAt: someDate}
+  // Notice that even though we sent 'Doe' as name, the setCreateResults returned 'John' as we requested
+});
+```
+
+Again, as with `setFindResults`, all future create events will have this response, until changed with another `setCreateResults` or until the `clearResults` method is called.
+
+### wolfpack().setUpdateResults(object || array of objects)
+
+The `wolfpack().setUpdateResults` allows you to set the fake db results for all update operations. You pass an object or array of objects for the results you want to fake.
+
+It is __important__ that, when faking update actions,  the instantiated model has an id set. Otherwise, the update action will throw an error.
+
+```javascript
+var wolfpack = require('wolfpack');
+
+var MyModel = wolfpack('path_to_app/api/models/MyModel');
+
+// First we need a model to update, so lets fake it
+wolfpack().setFindResults({id: 1, name: 'John'});
+wolfpack().setUpdateResults({id: 1, name: 'Johnson'});
+
+// Now we need an instantiated model to perform the update, so lets "find" one
+MyModel.findOne(1).done(function(err, model){
+  model.name = 'Doe'; // Our fake will not return this because the setUpdateResults says something different
+  // Now we can update
+  model.save(function(err, results){
+    // results will be {id: 1, name: 'Johnson', updatedAt: someDate, createdAt: someDate}
+  });
+});
+
+```
+
+Same as the other _faker_ methods, all future update results will have this result, unless they are changed or the `clearResults` method is called.
+
+### wolfpack().clearResults()
+
+The `wolfpack().clearResults` method clears any fake db responses that have been previously set by any or all of the `setFindResults`, `setCreateResults`, and/or `setUpdateResults` methods.
+
+```javascript
+var wolfpack = require('wolfpack');
+
+var MyModel = wolfpack('path_to_app/api/models/MyModel');
+
+// Lets fake some responses
+wolfpack().setFindResults({id: 1, name: 'John'});
+wolfpack().setCreateResults({name: 'myself'});
+
+// Now let's clear those responses
+wolfpack().clearResults();
+
+MyModel.find({id: 1}).done(function(err, results){
+  // results will be []
+});
+
+MyModel.create({name: 'Awesome developer'}).done(function(err, results){
+  // results will be {name: 'Awesome developer', updatedAt: someDate, createdAt: someDate}
+});
+```
+
+### wolfpack().setErrors(errors)
+
+The `wolfpack().setErrors` method allows you to fake an error or group of errors coming from the database. This way, you can test your failure scenarios.
+
+To use it, pass as an argument that will be the fake error coming from the database.
+
+```javascript
+var wolfpack = require('wolfpack');
+
+var MyModel = wolfpack('path_to_app/api/models/MyModel');
+
+// Lets fake a db error now
+wolfpack().setErrors('DB_CONNECTION_ERROR');
+MyModel.findOne(1).done(function(err, results){
+  // Now we are getting the err arguments, so we can handle it
+  if (err) {
+    // lets do our error handling
+  }
+});
+```
+
+When you set an error, just as the fake result methods, it will be set for all db calls. Most importantly, it will take precedence, which means that it doesn't matter that you use set a fake result with `setFindResults` or any other method like that, the error will always trigger first.
+
+To stop/clear the errors, use the `clearErrors` method.
+
+## Examples
+
 ### Mocking Model Results
 
 Wolfpack provides an adapter which mocks a database.  This allow us to predetermine the data we are expecting back from the database, without the need of one.  In other words, we can tell wolfack to give the model certain results when it performs an operation. We do it by using _result operators_, as shown below.
