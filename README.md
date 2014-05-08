@@ -74,24 +74,23 @@ next sections we are going to see how each component works separately.
 1. [Installation](#installation)
 2. [Usage](#usage)
 3. [API](#api)
-  1. [wolpack](#wolpack)
-  2. [wolfpack().setFindResults](#setFindResults)
-  3. [wolfpack().setCreateResults](#setCreateResults)
-  4. [wolfpack().setUpdateResults](#setUpdateResults)
-  5. [wolfpack().clearResults](#clearResults)
-  6. [wolfpack().setErrors](#setErrors)
-  7. [wolfpack().clearErrors](#clearErrors)
-  8. [wolfpack().spy](#spy)
-  9. [wolfpack().resetSpy](#resetSpy)
-  10. [wolfpack().resetSpies](#resetSpies)
+  1. [wolpack](#wolpackpath_to_model)
+  2. [wolfpack().setFindResults](#swolfpacksetfindresultsobject--array-of-objects)
+  3. [wolfpack().setCreateResults](#wolfpacksetcreateresultsobject--array-of-objects)
+  4. [wolfpack().setUpdateResults](#wolfpacksetupdateresultsobject--array-of-objects)
+  5. [wolfpack().clearResults](#wolfpackclearresults)
+  6. [wolfpack().setErrors](#wolfpackseterrorserrors)
+  7. [wolfpack().clearErrors](#wolfpackclearerrors)
+  8. [wolfpack().spy](#wolfpackspyfind--create-update--destroy)
+  9. [wolfpack().resetSpy](#wolfpackresetspyfind--create--update--destroy)
+  10. [wolfpack().resetSpies](#wolfpackresetspies)
 4. [Examples](#examples)
-  1. [Mocking Model Results](#mockModelResults)
-  2. [Mocking Errors](#mockErrors)
-  3. [Testing Sails Controllers](#testControllers)
-  4. [Asynchronous Testing](#asyncTesting)
-  5. [Testing Sails Models](#testModels)
+  1. [Mocking Model Results](#mocking-model-results)
+  2. [Mocking Errors](#mocking-errors)
+  3. [Testing Sails Controllers](#testing-sails-controllers)
+  4. [Asynchronous Testing](#asynchronous-testing)
+  5. [Testing Sails Models](#testing-sails-models)
 
-<a name="installation"/>
 ## Installation
 
 To install wolfpack, simply do an `npm install wolfpack`. To use it in your applications, just require it in node as you usually do.
@@ -100,7 +99,6 @@ To install wolfpack, simply do an `npm install wolfpack`. To use it in your appl
 var wolfpack = require('wolfpack');
 ```
 
-<a name="usage" />
 ## Usage
 
 As stated in the pitch, Wolfpack lets you instantiate your Sails model so that you can test your model without having to connect to a database.
@@ -127,10 +125,8 @@ This will in return give you an Instantiated model you can use to test the model
 
 The best part of this is that wolfpack, by default, spies on ALL methods, whether they were provided by Sails, you or your instance. The spies are provided by SinonJS, which therefore lets you know if a given method is called or not, with what it was called, etc. To know what properties and methods are available for your spies, please read the [SinonJS spies documentation](http://sinonjs.org/docs/#spies-api).
 
-<a name="api" />
 ## API
 
-<a name="wolfpack" />
 ### wolfpack('path_to_model')
 
 The wolfpack constructor allows you to instantiate a spied upon Sails model. You use by calling `wolfpack('path_to_model' || object)` and pass it either a string with the location of the model, or an object from which to build the model. All class and instance methods are spied on with [SinonJS spies](http://sinonjs.org/docs/#spies-api). Once instantiated, you can make your usual model calls.
@@ -158,7 +154,6 @@ var MyController = require('path_to_app/api/controllers/MyController');
 
 For more information and examples on how to test, please go forward and read the examples sections, were we present several samples on how to use wolpack to test controllers, model classes, and instances of models.
 
-<a name="setFindResults" />
 ### wolfpack().setFindResults(object || array of objects)
 
 The `wolfpack().setFindResults` allows you to mock/fake data coming from the database. In other words, you can fake data coming from the database, and Sails will treat it as real data and build and instance from it (or not).
@@ -181,7 +176,6 @@ MyModel.find({id:1}).done(function(err, results){
 
 Please note, if you set any results with the `wolfpack().setFindResults` method, __all future find calls to any model__ will return those results. If you call it to set other results, then those results will always be returned, and so on. To stop sending those fake results, use the `wolfpack().clearResults` method.
 
-<a name="setCreateResults" />
 ### wolfpack().setCreateResults(object || array of objects)
 
 Just as the `wolfpack().setFindResults`, the `wolfpack().createResults` method will allow you to set the fake db response for any create operation. As the argument, you pass an object or array of objects for the response you want.
@@ -202,7 +196,6 @@ MyModel.create({name: 'Doe'}).done(function(err, results){
 
 Again, as with `setFindResults`, all future create events will have this response, until changed with another `setCreateResults` or until the `clearResults` method is called.
 
-<a name="setUpdateResults" />
 ### wolfpack().setUpdateResults(object || array of objects)
 
 The `wolfpack().setUpdateResults` allows you to set the fake db results for all update operations. You pass an object or array of objects for the results you want to fake.
@@ -231,7 +224,6 @@ MyModel.findOne(1).done(function(err, model){
 
 Same as the other _faker_ methods, all future update results will have this result, unless they are changed or the `clearResults` method is called.
 
-<a name="clearResults" />
 ### wolfpack().clearResults()
 
 The `wolfpack().clearResults` method clears any fake db responses that have been previously set by any or all of the `setFindResults`, `setCreateResults`, and/or `setUpdateResults` methods.
@@ -257,7 +249,6 @@ MyModel.create({name: 'Awesome developer'}).done(function(err, results){
 });
 ```
 
-<a name="setErrors" />
 ### wolfpack().setErrors(errors)
 
 The `wolfpack().setErrors` method allows you to fake an error or group of errors coming from the database. This way, you can test your failure scenarios.
@@ -283,7 +274,6 @@ When you set an error, just as the fake result methods, it will be set for all d
 
 To stop/clear the errors, use the `clearErrors` method.
 
-<a name="clearErrors" />
 ### wolfpack().clearErrors()
 
 When you no longer want the to fake errors, you can call the `clearErrors` method which will stop sending errors to your model calls.
@@ -304,7 +294,6 @@ MyModel.findOne(1).done(function(err, results){
 });
 ```
 
-<a name="spy" />
 ### wolfpack().spy('find | create |update | destroy')
 
 There might be situations in which we need to know if a certain CRUD operation is being performed.  For example, when calling the save method of a model, we want to be sure that the proper parameters are being called on save.  In those scenarios, it is useful to test what update operation is happening in the adapter.
@@ -325,7 +314,6 @@ wolfpack().create({name: 'test'}).done(function(err, results){
 });
 ```
 
-<a name="resetSpy" />
 ### wolfpack().resetSpy('find | create | update | destroy')
 
 Since in wolfpack all operations are spied upon, including CRUDs, there might be some cases in which you need your CRUD spy to be set to its beginning value for easier testing. For those cases you can use the `resetSpy` method.
@@ -345,7 +333,6 @@ wolfpack().create({name: 'test'}).done(function(err, results){
 });
 ```
 
-<a name="resetSpies" />
 ### wolfpack().resetSpies()
 
 The `resetSpies` methods resets all CRUD spies at once, so you don't have to call them one by one.
@@ -365,10 +352,8 @@ wolfpack().create({name: 'test'}).done(function(err, results){
 });
 ```
 
-<a name="examples" />
 ## Examples
 
-<a name="mockModelResults" />
 ### Mocking Model Results
 
 Wolfpack provides an adapter which mocks a database.  This allow us to predetermine the data we are expecting back from the database, without the need of one.  In other words, we can tell wolfack to give the model certain results when it performs an operation. We do it by using _result operators_, as shown below.
@@ -468,7 +453,6 @@ Model.findOne(1).done(function(err, results){
 });
 ```
 
-<a name="mockErrors" />
 ### Mocking Errors
 
 I have a confession to make.  I'm obsessed with getting 100% coverage on my code. To achieve 100% coverage, I need to test every scenario, including error scenarios, which are sometimes quite hard to produce.
@@ -540,7 +524,7 @@ try {
   console.log(e);  // Will not output
 }
 ```
-<a name="testControllers" />
+
 ### Testing Sails Controllers
 
 The whole point of wolfpack is to make testing Sails models and apps easier. Great! So how do we do it? Let's start by testing a simple Sails controllers.  Let's say we have a controller that should add or kick users from a chatroom when a given url is hit.  Let's not worry about routes right now and just focus on the controller.
@@ -665,7 +649,6 @@ describe('SampleController', function(){
 
 As you can see, we can make sure that the controller is performing the correct action in the Model, which is the one that handles the data.
 
-<a name="asyncTesting" />
 ### Asynchronous testing
 
 One thing we shouldn't forget is that Sails model operations are asynchronous, therefore if we want our test to behave correctly, we should treat them as asynchronous operations.
@@ -760,7 +743,7 @@ describe('ChatController', function(){
   });
 });
 ```
-<a name="testModels" />
+
 ### Testing Sails Models
 
 Great! We've seen how wolfpack can help us test thoroughly a controller by providing us an instantiated model all spied upon. The controller is correctly calling the Model to add the user to the chatroom. Now we must make sure the model is adding the user to the chatroom.
