@@ -143,7 +143,7 @@ var MyModel = wolfpack('path_to_app/api/models/MyModel');
 MyModel.find({name: 'test'}).done(function(err, results){
   // ... more code ...
 });
-``
+```
 
 For testing ccontrollers, you instantiate your model globally as Sails does on the background, like this:
 
