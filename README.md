@@ -74,7 +74,7 @@ next sections we are going to see how each component works separately.
 1. [Installation](#installation)
 2. [Usage](#usage)
 3. [API](#api)
-  1. [wolpack](#wolpack)
+  1. [wolfpack](#wolfpack)
   2. [wolfpack().setFindResults](#setFindResults)
   3. [wolfpack().setCreateResults](#setCreateResults)
   4. [wolfpack().setUpdateResults](#setUpdateResults)
