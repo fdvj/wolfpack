@@ -12,7 +12,7 @@ var wolfpack = require('wolfpack');
 var sinon = require('sinon');
 
 // We put in the global scope our instantiated model to be used by the controller
-global.Chatroom = wolpack('path_to_models/Chatroom'); 
+global.Chatroom = wolfpack('path_to_models/Chatroom'); 
 
 // We load our controller for unit tests
 var ChatController = require('path_to_controllers'/ChatroomController);
