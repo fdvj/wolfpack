@@ -22,6 +22,13 @@ describe('Wolfpack', function(){
       expect(failing_bool).toThrow();
     });
 
+    it("should be able to locate the model if given on the process level", function(){
+      var passing = function() {
+        wolfpack('spec/fixtures/Model');
+      };
+      expect(passing).not.toThrow();
+    });
+
     it("should throw an error if the model cannot be loaded", function(){
       var passing = function() {
         wolfpack(__dirname + '/../fixtures/Model');
