@@ -639,7 +639,7 @@ describe('SampleController', function(){
     it("look for a given user and return it", function(){
       SampleController.returnUser(req, res);
 
-      expect(Model.findOne.calledWith(req.params.username));
+      expect(Model.findOne.calledWith(req.params.username)).toBeTruthy();
 
     });
 
