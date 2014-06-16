@@ -33,6 +33,6 @@
   },
   "dependencies": {
     "sinon": "^1.9.0",
-    "waterline": "^0.9.16"
+    "waterline": "^0.10.0-rc14"
   }
 }
