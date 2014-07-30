@@ -4,7 +4,8 @@
   "description": "SailsJS Model Testing Library",
   "main": "index.js",
   "scripts": {
-    "test": "grunt test"
+    "test": "grunt test",
+    "test-adapter": ""
   },
   "repository": {
     "type": "git",
@@ -33,6 +34,15 @@
   },
   "dependencies": {
     "sinon": "^1.9.0",
-    "waterline": "^0.9.16"
+    "waterline": "~0.10.0",
+    "random-strings": "0.0.1"
+  },
+  "waterlineAdapter": {
+    "type": "testAdapter",
+    "interfaces": [
+      "semantic",
+      "queryable"
+    ],
+    "waterlineVersion": "~0.10.0"
   }
 }
