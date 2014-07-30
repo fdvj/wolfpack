@@ -33,9 +33,10 @@
     "grunt-open": "~0.2.0"
   },
   "dependencies": {
+    "fibers": "^1.0.1",
+    "random-strings": "0.0.1",
     "sinon": "^1.9.0",
-    "waterline": "~0.10.0",
-    "random-strings": "0.0.1"
+    "waterline": "~0.10.0"
   },
   "waterlineAdapter": {
     "type": "testAdapter",
