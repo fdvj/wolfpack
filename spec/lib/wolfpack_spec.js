@@ -103,6 +103,7 @@ describe('Wolfpack', function(){
 
     function asyncErr(err) {
       errors = err;
+      ready = true;
     }
 
     function asyncForDone(err, results) {
@@ -191,7 +192,6 @@ describe('Wolfpack', function(){
         Model.findOne(1).then(function(model){
           model.name = 'Test';
           model.save(function(err, data){
-            console.log(data);
             updateResults = data;
           });
         });
@@ -255,14 +255,15 @@ describe('Wolfpack', function(){
       });
     });
 
-    it("if an error occurs in create operation, it should return the error", function(){
+    it("if an error occurs in create operation, it should return the error and stack", function(){
       runs(function(){
         wolfpack().setErrors('errors');
         Model.create(fixture).then(async).fail(asyncErr);
       });
       waitsFor(asyncReady);
       runs(function(){
-        expect(errors).toBe('errors');
+        expect(errors.originalError).toBe('errors');
+        expect(errors.rawStack).toBeDefined();
       });
     });
 
@@ -296,7 +297,8 @@ describe('Wolfpack', function(){
       });
       waitsFor(asyncReady);
       runs(function(){
-        expect(errors).toBe('errors');
+        expect(errors.originalError).toBe('errors');
+        expect(errors.rawStack).toBeDefined();
       });
     });
 
@@ -311,7 +313,8 @@ describe('Wolfpack', function(){
       });
       waitsFor(asyncReady);
       runs(function(){
-        expect(errors).toBe('errors');
+        expect(errors.originalError).toBe('errors');
+        expect(errors.rawStack).toBeDefined();
       });
     });
 
@@ -325,7 +328,7 @@ describe('Wolfpack', function(){
       });
       waitsFor(asyncReady);
       runs(function(){
-        expect(data).not.toBeDefined();
+        expect(data).toBeNull();
       });
     });
 
@@ -352,7 +355,8 @@ describe('Wolfpack', function(){
       waitsFor(asyncReady);
 
       runs(function(){
-        expect(errors).toBe('error');
+        expect(errors.originalError).toBe('error');
+        expect(errors.rawStack).toBeDefined();
       });
     });
 
@@ -365,7 +369,7 @@ describe('Wolfpack', function(){
       waitsFor(asyncReady);
 
       runs(function(){
-        expect(errors).not.toBeDefined();
+        expect(errors).toBeNull();
       });
     });
 
