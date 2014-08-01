@@ -5,7 +5,13 @@ describe('Wolfpack', function(){
   describe('when called with an argument', function(){
     it("should receive either an object or a path to the model", function(){
       var passing_obj = function() {
-        wolfpack({name: 'test'});
+        wolfpack({
+          attributes: {
+            name: {
+              type: 'string'
+            }
+          }
+        });
       };
       var passing_str = function() {
         wolfpack(__dirname + '/../fixtures/Model');
@@ -64,10 +70,10 @@ describe('Wolfpack', function(){
       var Model = wolfpack(__dirname + '/../fixtures/Model');
       var fixture = {name: 'My Name', date: new Date()};
       var data, ready;
-      wolfpack().setFindResults(fixture);
       
       runs(function(){
-        Model.findOne(1).done(function(err, results){
+        wolfpack().setFindResults(fixture);
+        Model.findOne(1).then(function(results){
           data = results;
           ready = true;
         });
@@ -90,10 +96,18 @@ describe('Wolfpack', function(){
     var Model = wolfpack(__dirname + '/../fixtures/Model');
     var ready, data, fixture, errors;
 
-    function async(err, results) {
+    function async(results) {
       ready = true;
       data = results;
+    }
+
+    function asyncErr(err) {
       errors = err;
+    }
+
+    function asyncForDone(err, results) {
+      asyncErr(err);
+      async(results);
     }
 
     function asyncReady() {
@@ -112,6 +126,7 @@ describe('Wolfpack', function(){
       ready = false;
       errors = null;
       wolfpack().clearErrors();
+      wolfpack().clearResults();
     });
 
     it("should provide a way to set the results given by the ORM", function(){
@@ -142,7 +157,7 @@ describe('Wolfpack', function(){
      
       runs(function(){
         wolfpack().setFindResults(fixture);
-        Model.findOne(1).done(async);
+        Model.findOne(1).then(async).fail(asyncErr);
       });
 
       waitsFor(asyncReady);
@@ -156,7 +171,7 @@ describe('Wolfpack', function(){
     it("should be able to set the results for a create operation to the given values", function(){
       runs(function(){
         wolfpack().setCreateResults(fixture);
-        Model.create(fixture).done(async);
+        Model.create(fixture).then(async).fail(asyncErr);
       });
 
       waitsFor(asyncReady);
@@ -167,21 +182,27 @@ describe('Wolfpack', function(){
       });
     });
 
-    it("should be able to set the results for a update operation to the given values", function(){
+    it("should be able to set the results for an update operation to the given values", function(){
+      var updateResults;
       runs(function(){
         fixture.id = 1;
         wolfpack().setFindResults(fixture);
         wolfpack().setUpdateResults({id:1, name: 'Test', date: new Date()});
-        Model.findOne(1).done(function(err, model){
+        Model.findOne(1).then(function(model){
           model.name = 'Test';
-          model.save(async);
+          model.save(function(err, data){
+            console.log(data);
+            updateResults = data;
+          });
         });
       });
 
-      waitsFor(asyncReady);
+      waitsFor(function(){
+        return updateResults;
+      });
 
       runs(function(){
-        expect(data.name).toBe('Test');
+        expect(updateResults.name).toBe('Test');
       });
     });
 
@@ -189,7 +210,7 @@ describe('Wolfpack', function(){
       wolfpack().setFindResults(fixture);
 
       runs(function(){
-        Model.findOne(1).done(async);
+        Model.findOne(1).then(async).fail(asyncErr);
       });
 
       waitsFor(asyncReady);
@@ -210,9 +231,9 @@ describe('Wolfpack', function(){
     });
 
     it("if no results are provided for find operation, it should return emtpy", function(){
-      wolfpack().clearResults();
       runs(function(){
-        Model.findOne(1).done(async);
+        wolfpack().clearResults();
+        Model.findOne(1).then(async).fail(asyncErr);
       });
       waitsFor(asyncReady);
       runs(function(){
@@ -221,9 +242,9 @@ describe('Wolfpack', function(){
     });
 
     it("if no results are provided for create operation, it should return the given create values", function(){
-      wolfpack().clearResults();
       runs(function(){
-        Model.create(fixture).done(async);
+        wolfpack().clearResults();
+        Model.create(fixture).then(async).fail(asyncErr);
       });
 
       waitsFor(asyncReady);
@@ -235,9 +256,9 @@ describe('Wolfpack', function(){
     });
 
     it("if an error occurs in create operation, it should return the error", function(){
-      wolfpack().setErrors('errors');
       runs(function(){
-        Model.create(fixture).done(async);
+        wolfpack().setErrors('errors');
+        Model.create(fixture).then(async).fail(asyncErr);
       });
       waitsFor(asyncReady);
       runs(function(){
@@ -246,14 +267,13 @@ describe('Wolfpack', function(){
     });
 
     it("if no results are provided for update operation it should return the model values", function(){
-      wolfpack().clearResults();
-      fixture.id = 1;
-      wolfpack().setFindResults(fixture);
-
       runs(function(){
-        Model.findOne(1).done(function(err, model){
+        wolfpack().clearResults();
+        fixture.id = 1;
+        wolfpack().setFindResults(fixture);
+        Model.findOne(1).then(function(model){
           model.name = 'another';
-          model.save(async);
+          model.save(asyncForDone);
         });
       });
 
@@ -265,13 +285,13 @@ describe('Wolfpack', function(){
     });
 
     it("if an error occurs in update operation, it should return the error", function(){
-      fixture.id = 1;
-      wolfpack().setFindResults(fixture);
       runs(function(){
-        Model.findOne(1).done(function(err, model){
+        fixture.id = 1;
+        wolfpack().setFindResults(fixture);
+        Model.findOne(1).then(function(model){
           wolfpack().setErrors('errors');
           model.name = 'different';
-          model.save(async);
+          model.save(asyncForDone);
         });
       });
       waitsFor(asyncReady);
@@ -281,12 +301,12 @@ describe('Wolfpack', function(){
     });
 
     it("if an error occurs during a destroy operation, it should return the error", function(){
-      fixture.id = 1;
-      wolfpack().setFindResults(fixture);
       runs(function(){
-        Model.findOne(1).done(function(err, model){
+        fixture.id = 1;
+        wolfpack().setFindResults(fixture);
+        Model.findOne(1).then(function(model){
           wolfpack().setErrors('errors');
-          model.destroy(async);
+          model.destroy(asyncErr);
         });
       });
       waitsFor(asyncReady);
@@ -296,10 +316,10 @@ describe('Wolfpack', function(){
     });
 
     it("if no errors occur, it should return nothing as always", function(){
-      fixture.id = 1;
-      wolfpack().setFindResults(fixture);
       runs(function(){
-        Model.findOne(1).done(function(err, model){
+        fixture.id = 1;
+        wolfpack().setFindResults(fixture);
+        Model.findOne(1).then(function(model){
           model.destroy(async);
         });
       });
@@ -310,11 +330,10 @@ describe('Wolfpack', function(){
     });
 
     it("should provide a method for resetting results", function(){
-      wolfpack().setFindResults(fixture);
-      wolfpack().clearResults();
-      
       runs(function(){
-        Model.findOne(1).done(async);
+        wolfpack().setFindResults(fixture);
+        wolfpack().clearResults();
+        Model.findOne(1).then(async);
       });
 
       waitsFor(asyncReady);
@@ -325,9 +344,9 @@ describe('Wolfpack', function(){
     });
 
     it("should provide a way for setting errors", function(){
-      wolfpack().setErrors('error');
       runs(function(){
-        Model.findOne(1).done(async);
+        wolfpack().setErrors('error');
+        Model.findOne(1).then(async).fail(asyncErr);
       });
 
       waitsFor(asyncReady);
@@ -338,9 +357,9 @@ describe('Wolfpack', function(){
     });
 
     it("should provide a way for resetting errors", function(){
-      wolfpack().clearErrors();
       runs(function(){
-        Model.findOne(1).done(async);
+        wolfpack().clearErrors();
+        Model.findOne(1).then(async).fail(asyncErr);
       });
 
       waitsFor(asyncReady);
@@ -351,10 +370,11 @@ describe('Wolfpack', function(){
     });
 
     it("should provide a way for testing if a CRUD operation was performed in the adapter", function(){
-      wolfpack().resetSpies();
-      var spy = wolfpack().spy('find');
+      var spy;
       runs(function(){
-        Model.findOne(1).done(async);
+        wolfpack().resetSpies();
+        spy = wolfpack().spy('find');
+        Model.findOne(1).then(async);
       });
 
       waitsFor(asyncReady);
@@ -369,9 +389,10 @@ describe('Wolfpack', function(){
     });
 
     it("should provide a way for individually resetting CRUD spies", function(){
-      var spy = wolfpack().spy('find');
+      var spy;
       runs(function(){
-        Model.findOne(1).done(async);
+        spy = wolfpack().spy('find');
+        Model.findOne(1).then(async);
       });
 
       waitsFor(asyncReady);
@@ -388,7 +409,9 @@ describe('Wolfpack', function(){
       var createSpy = wolfpack().spy('create');
 
       runs(function(){
-        Model.findOne(1).done(async);
+        findSpy = wolfpack().spy('find');
+        createSpy = wolfpack().spy('create');
+        Model.findOne(1).then(async);
       });
 
       waitsFor(asyncReady);
@@ -396,7 +419,7 @@ describe('Wolfpack', function(){
       runs(function(){
         // Reset async to execute another call
         asyncReset();
-        Model.create({name: 'test'}).done(async);
+        Model.create({name: 'test'}).then(async);
       });
 
       waitsFor(asyncReady);
