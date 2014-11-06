@@ -211,7 +211,36 @@ describe('Wolfpack', function(){
       });
 
       it("should return an empty array when no more results are available", function(){
-
+        runs(function(){
+          wolfpack.setFindResults.apply(this, fixtures);
+          Model.findOne(1).then(async).catch(asyncErr);
+        });
+        waitsFor(asyncReady);
+        runs(function(){
+          expect(data.name).toBe(fixtures[0].name);
+          expect(data.date).toBe(fixtures[0].date);
+          asyncReset();
+          Model.findOne(2).then(async).catch(asyncErr);
+        });
+        waitsFor(asyncReady);
+        runs(function(){
+          expect(data.name).toBe(fixtures[1].name);
+          expect(data.date).toBe(fixtures[1].date);
+          asyncReset();
+          Model.findOne(3).then(async).catch(asyncErr);
+        });
+        waitsFor(asyncReady);
+        runs(function(){
+          expect(data.name).toBe(fixtures[2].name);
+          expect(data.date).toBe(fixtures[2].date);
+          asyncReset();
+          Model.findOne(3).then(async).catch(asyncErr);
+        });
+        waitsFor(asyncReady);
+        runs(function(){
+          expect(data.name).toBe(fixtures[2].name);
+          expect(data.date).toBe(fixtures[2].date);
+        });
       });
 
     });
