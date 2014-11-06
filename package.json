@@ -33,6 +33,7 @@
     "grunt-open": "~0.2.0"
   },
   "dependencies": {
+    "lodash": "^2.4.1",
     "random-strings": "0.0.1",
     "sinon": "^1.9.0",
     "waterline": "~0.10.0"
