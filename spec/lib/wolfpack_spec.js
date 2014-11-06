@@ -169,7 +169,7 @@ describe('Wolfpack', function(){
       it("should use that result every time (find)", function(){
         runs(function(){
           wolfpack.setFindResults(fixture);
-          Model.findOne(1).then(async).fail(asyncErr);
+          Model.findOne(1).then(async).catch(asyncErr);
         });
 
         waitsFor(asyncReady);
@@ -187,19 +187,26 @@ describe('Wolfpack', function(){
       it("should return the results in the order they were given", function(){
         runs(function(){
           wolfpack.setFindResults.apply(this, fixtures);
-          Model.findOne(1).then(async).fail(asyncErr);
+          Model.findOne(1).then(async).catch(asyncErr);
         });
         waitsFor(asyncReady);
         runs(function(){
           expect(data.name).toBe(fixtures[0].name);
           expect(data.date).toBe(fixtures[0].date);
           asyncReset();
-          Model.findOne(2).then(async).fail(asyncErr);
+          Model.findOne(2).then(async).catch(asyncErr);
         });
         waitsFor(asyncReady);
         runs(function(){
           expect(data.name).toBe(fixtures[1].name);
           expect(data.date).toBe(fixtures[1].date);
+          asyncReset();
+          Model.findOne(3).then(async).catch(asyncErr);
+        });
+        waitsFor(asyncReady);
+        runs(function(){
+          expect(data.name).toBe(fixtures[2].name);
+          expect(data.date).toBe(fixtures[2].date);
         });
       });
 
@@ -213,7 +220,7 @@ describe('Wolfpack', function(){
      
       runs(function(){
         wolfpack.setFindResults(fixture);
-        Model.findOne(1).then(async).fail(asyncErr);
+        Model.findOne(1).then(async).catch(asyncErr);
       });
 
       waitsFor(asyncReady);
@@ -227,7 +234,7 @@ describe('Wolfpack', function(){
     it("should be able to set the results for a create operation to the given values", function(){
       runs(function(){
         wolfpack.setCreateResults(fixture);
-        Model.create(fixture).then(async).fail(asyncErr);
+        Model.create(fixture).then(async).catch(asyncErr);
       });
 
       waitsFor(asyncReady);
@@ -265,7 +272,7 @@ describe('Wolfpack', function(){
       wolfpack.setFindResults(fixture);
 
       runs(function(){
-        Model.findOne(1).then(async).fail(asyncErr);
+        Model.findOne(1).then(async).catch(asyncErr);
       });
 
       waitsFor(asyncReady);
@@ -288,7 +295,7 @@ describe('Wolfpack', function(){
     it("if no results are provided for find operation, it should return emtpy", function(){
       runs(function(){
         wolfpack.clearResults();
-        Model.findOne(1).then(async).fail(asyncErr);
+        Model.findOne(1).then(async).catch(asyncErr);
       });
       waitsFor(asyncReady);
       runs(function(){
@@ -299,7 +306,7 @@ describe('Wolfpack', function(){
     it("if no results are provided for create operation, it should return the given create values", function(){
       runs(function(){
         wolfpack.clearResults();
-        Model.create(fixture).then(async).fail(asyncErr);
+        Model.create(fixture).then(async).catch(asyncErr);
       });
 
       waitsFor(asyncReady);
@@ -313,7 +320,7 @@ describe('Wolfpack', function(){
     it("if an error occurs in create operation, it should return the error and stack", function(){
       runs(function(){
         wolfpack.setErrors('errors');
-        Model.create(fixture).then(async).fail(asyncErr);
+        Model.create(fixture).then(async).catch(asyncErr);
       });
       waitsFor(asyncReady);
       runs(function(){
@@ -404,7 +411,7 @@ describe('Wolfpack', function(){
     it("should provide a way for setting errors", function(){
       runs(function(){
         wolfpack.setErrors('error');
-        Model.findOne(1).then(async).fail(asyncErr);
+        Model.findOne(1).then(async).catch(asyncErr);
       });
 
       waitsFor(asyncReady);
@@ -418,7 +425,7 @@ describe('Wolfpack', function(){
     it("should provide a way for resetting errors", function(){
       runs(function(){
         wolfpack.clearErrors();
-        Model.findOne(1).then(async).fail(asyncErr);
+        Model.findOne(1).then(async).catch(asyncErr);
       });
 
       waitsFor(asyncReady);
@@ -559,7 +566,7 @@ describe('Wolfpack', function(){
        
         runs(function(){
           wolfpack().setFindResults(fixture);
-          Model.findOne(1).then(async).fail(asyncErr);
+          Model.findOne(1).then(async).catch(asyncErr);
         });
 
         waitsFor(asyncReady);
@@ -573,7 +580,7 @@ describe('Wolfpack', function(){
       it("should be able to set the results for a create operation to the given values", function(){
         runs(function(){
           wolfpack().setCreateResults(fixture);
-          Model.create(fixture).then(async).fail(asyncErr);
+          Model.create(fixture).then(async).catch(asyncErr);
         });
 
         waitsFor(asyncReady);
@@ -611,7 +618,7 @@ describe('Wolfpack', function(){
         wolfpack().setFindResults(fixture);
 
         runs(function(){
-          Model.findOne(1).then(async).fail(asyncErr);
+          Model.findOne(1).then(async).catch(asyncErr);
         });
 
         waitsFor(asyncReady);
@@ -634,7 +641,7 @@ describe('Wolfpack', function(){
       it("if no results are provided for find operation, it should return emtpy", function(){
         runs(function(){
           wolfpack().clearResults();
-          Model.findOne(1).then(async).fail(asyncErr);
+          Model.findOne(1).then(async).catch(asyncErr);
         });
         waitsFor(asyncReady);
         runs(function(){
@@ -645,7 +652,7 @@ describe('Wolfpack', function(){
       it("if no results are provided for create operation, it should return the given create values", function(){
         runs(function(){
           wolfpack().clearResults();
-          Model.create(fixture).then(async).fail(asyncErr);
+          Model.create(fixture).then(async).catch(asyncErr);
         });
 
         waitsFor(asyncReady);
@@ -659,7 +666,7 @@ describe('Wolfpack', function(){
       it("if an error occurs in create operation, it should return the error and stack", function(){
         runs(function(){
           wolfpack().setErrors('errors');
-          Model.create(fixture).then(async).fail(asyncErr);
+          Model.create(fixture).then(async).catch(asyncErr);
         });
         waitsFor(asyncReady);
         runs(function(){
@@ -750,7 +757,7 @@ describe('Wolfpack', function(){
       it("should provide a way for setting errors", function(){
         runs(function(){
           wolfpack().setErrors('error');
-          Model.findOne(1).then(async).fail(asyncErr);
+          Model.findOne(1).then(async).catch(asyncErr);
         });
 
         waitsFor(asyncReady);
@@ -764,7 +771,7 @@ describe('Wolfpack', function(){
       it("should provide a way for resetting errors", function(){
         runs(function(){
           wolfpack().clearErrors();
-          Model.findOne(1).then(async).fail(asyncErr);
+          Model.findOne(1).then(async).catch(asyncErr);
         });
 
         waitsFor(asyncReady);
