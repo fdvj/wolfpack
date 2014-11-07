@@ -182,6 +182,21 @@ describe('Wolfpack', function(){
 
     });
 
+    it("should be able to set the results for a find operation to the given values", function(){
+     
+      runs(function(){
+        wolfpack.setFindResults(fixture);
+        Model.findOne(1).then(async).catch(asyncErr);
+      });
+
+      waitsFor(asyncReady);
+
+      runs(function(){
+        expect(data.name).toBe(fixture.name);
+        expect(data.date).toBe(fixture.date);
+      });
+    });
+
     describe('when multiple results are given', function(){
 
       it("should return the results in the order they were given", function(){
@@ -243,21 +258,6 @@ describe('Wolfpack', function(){
         });
       });
 
-    });
-
-    it("should be able to set the results for a find operation to the given values", function(){
-     
-      runs(function(){
-        wolfpack.setFindResults(fixture);
-        Model.findOne(1).then(async).catch(asyncErr);
-      });
-
-      waitsFor(asyncReady);
-
-      runs(function(){
-        expect(data.name).toBe(fixture.name);
-        expect(data.date).toBe(fixture.date);
-      });
     });
 
     it("should be able to set the results for a create operation to the given values", function(){
@@ -524,6 +524,22 @@ describe('Wolfpack', function(){
         expect(findSpy.called).toBeFalsy();
         expect(createSpy.called).toBeFalsy();
       });
+    });
+
+    it("should provide class methods to allow mocking specific scenarions", function(){
+      expect(Model.wolfpack).toBeDefined();
+      expect(Model.wolfpack.setFindResults).toBeDefined();
+      expect(Model.wolfpack.setCreateResults).toBeDefined();
+      expect(Model.wolfpack.setUpdateResults).toBeDefined();
+    });
+
+    it("should provide shortcut methods to class mocking result methods", function(){
+      expect(Model.setFindResults).toBeDefined();
+      expect(Model.setCreateResults).toBeDefined();
+      expect(Model.setUpdateResults).toBeDefined();
+      expect(Model.setFindResults).toEqual(Model.wolfpack.setFindResults);
+      expect(Model.setCreateResults).toEqual(Model.wolfpack.setCreateResults);
+      expect(Model.setUpdateResults).toEqual(Model.wolfpack.setUpdateResults);
     });
   });
 
