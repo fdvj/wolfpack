@@ -4,6 +4,7 @@ Change Log
 ## 0.3.0
 Adds mocking results conditionally on models
 Supports multiple results on setResult operations
+[#11](https://github.com/fdvj/wolfpack/issues/11) Removes associatons to allow testing (association support planned for the future)
 
 
 ## 0.2.0-rc1
