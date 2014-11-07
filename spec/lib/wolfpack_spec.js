@@ -59,7 +59,29 @@ describe('Wolfpack', function(){
       expect(Model.create.called).toBeDefined();
     });
 
-    it("should provide spies for custom model methods", function(){
+    it("should remove any associations and the associated attribute to json type", function(){
+      var Assoc1 = wolfpack({
+        attributes: {
+          name: {
+            type: 'string'
+          },
+          association: {
+            via: 'model',
+            dominant: true,
+            collection: 'test',
+            model: 'another'
+          }
+        }
+      });
+      var attributes = Assoc1._attributes;
+      expect(attributes.association.dominant).not.toBeDefined();
+      expect(attributes.association.via).not.toBeDefined();
+      expect(attributes.association.model).not.toBeDefined();
+      expect(attributes.association.collection).not.toBeDefined();
+      expect(attributes.association.type).toEqual('json');
+    });
+
+    it("should provide spies for custom class methods", function(){
       var Model = wolfpack(__dirname + '/../fixtures/Model');
       expect(Model.modelMethod.called).toBeDefined();
       // The fixture returns true so calling it should return true

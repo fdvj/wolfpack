@@ -12,6 +12,21 @@ Model.wolfpack.setUpdateResults({date: new Date('2009-09-09')}, fixtures[1]);
 Model.wolfpack.setUpdateResults({date: new Date('2009-01-01'), name: 'blah'}, fixtures[2]);
 
 try {
+   var Assoc1 = wolfpack({
+      attributes: {
+        name: {
+          type: 'string'
+        },
+        association: {
+          via: 'model',
+          dominant: true,
+          collection: 'test'
+        }
+      }
+    });
+
+   debugger;
+
   Model.findOne(1).then(function(model){
     model.name = 'blah';
     model.date = new Date('2009-01-01');
