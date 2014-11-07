@@ -165,23 +165,6 @@ describe('Wolfpack', function(){
       expect(failing).toThrow();
     });
 
-    describe('when only one result is given', function(){
-      it("should use that result every time (find)", function(){
-        runs(function(){
-          wolfpack.setFindResults(fixture);
-          Model.findOne(1).then(async).catch(asyncErr);
-        });
-
-        waitsFor(asyncReady);
-
-        runs(function(){
-          expect(data.name).toBe(fixture.name);
-          expect(data.date).toBe(fixture.date);
-        });
-      });
-
-    });
-
     it("should be able to set the results for a find operation to the given values", function(){
      
       runs(function(){
@@ -197,69 +180,6 @@ describe('Wolfpack', function(){
       });
     });
 
-    describe('when multiple results are given', function(){
-
-      it("should return the results in the order they were given", function(){
-        runs(function(){
-          wolfpack.setFindResults.apply(this, fixtures);
-          Model.findOne(1).then(async).catch(asyncErr);
-        });
-        waitsFor(asyncReady);
-        runs(function(){
-          expect(data.name).toBe(fixtures[0].name);
-          expect(data.date).toBe(fixtures[0].date);
-          asyncReset();
-          Model.findOne(2).then(async).catch(asyncErr);
-        });
-        waitsFor(asyncReady);
-        runs(function(){
-          expect(data.name).toBe(fixtures[1].name);
-          expect(data.date).toBe(fixtures[1].date);
-          asyncReset();
-          Model.findOne(3).then(async).catch(asyncErr);
-        });
-        waitsFor(asyncReady);
-        runs(function(){
-          expect(data.name).toBe(fixtures[2].name);
-          expect(data.date).toBe(fixtures[2].date);
-        });
-      });
-
-      it("should return an empty array when no more results are available", function(){
-        runs(function(){
-          wolfpack.setFindResults.apply(this, fixtures);
-          Model.findOne(1).then(async).catch(asyncErr);
-        });
-        waitsFor(asyncReady);
-        runs(function(){
-          expect(data.name).toBe(fixtures[0].name);
-          expect(data.date).toBe(fixtures[0].date);
-          asyncReset();
-          Model.findOne(2).then(async).catch(asyncErr);
-        });
-        waitsFor(asyncReady);
-        runs(function(){
-          expect(data.name).toBe(fixtures[1].name);
-          expect(data.date).toBe(fixtures[1].date);
-          asyncReset();
-          Model.findOne(3).then(async).catch(asyncErr);
-        });
-        waitsFor(asyncReady);
-        runs(function(){
-          expect(data.name).toBe(fixtures[2].name);
-          expect(data.date).toBe(fixtures[2].date);
-          asyncReset();
-          Model.findOne(3).then(async).catch(asyncErr);
-        });
-        waitsFor(asyncReady);
-        runs(function(){
-          expect(data.name).toBe(fixtures[2].name);
-          expect(data.date).toBe(fixtures[2].date);
-        });
-      });
-
-    });
-
     it("should be able to set the results for a create operation to the given values", function(){
       runs(function(){
         wolfpack.setCreateResults(fixture);
@@ -269,8 +189,8 @@ describe('Wolfpack', function(){
       waitsFor(asyncReady);
 
       runs(function(){
-        expect(data[0].name).toBe(fixture.name);
-        expect(data[0].date).toBe(fixture.date);
+        expect(data.name).toBe(fixture.name);
+        expect(data.date).toBe(fixture.date);
       });
     });
 
@@ -295,6 +215,209 @@ describe('Wolfpack', function(){
       runs(function(){
         expect(updateResults.name).toBe('Test');
       });
+    });
+
+    describe('when multiple results are given', function(){
+
+      // Find
+      it("should return the results in the order they were given (find)", function(){
+        runs(function(){
+          wolfpack.setFindResults.apply(this, fixtures);
+          Model.findOne(1).then(async).catch(asyncErr);
+        });
+        waitsFor(asyncReady);
+        runs(function(){
+          expect(data.name).toBe(fixtures[0].name);
+          expect(data.date).toBe(fixtures[0].date);
+          asyncReset();
+          Model.findOne(2).then(async).catch(asyncErr);
+        });
+        waitsFor(asyncReady);
+        runs(function(){
+          expect(data.name).toBe(fixtures[1].name);
+          expect(data.date).toBe(fixtures[1].date);
+          asyncReset();
+          Model.findOne(3).then(async).catch(asyncErr);
+        });
+        waitsFor(asyncReady);
+        runs(function(){
+          expect(data.name).toBe(fixtures[2].name);
+          expect(data.date).toBe(fixtures[2].date);
+        });
+      });
+
+      it("should return an the last given result when all previous have been returned (find)", function(){
+        runs(function(){
+          wolfpack.setFindResults.apply(this, fixtures);
+          Model.findOne(1).then(async).catch(asyncErr);
+        });
+        waitsFor(asyncReady);
+        runs(function(){
+          expect(data.name).toBe(fixtures[0].name);
+          expect(data.date).toBe(fixtures[0].date);
+          asyncReset();
+          Model.findOne(2).then(async).catch(asyncErr);
+        });
+        waitsFor(asyncReady);
+        runs(function(){
+          expect(data.name).toBe(fixtures[1].name);
+          expect(data.date).toBe(fixtures[1].date);
+          asyncReset();
+          Model.findOne(3).then(async).catch(asyncErr);
+        });
+        waitsFor(asyncReady);
+        runs(function(){
+          expect(data.name).toBe(fixtures[2].name);
+          expect(data.date).toBe(fixtures[2].date);
+          asyncReset();
+          Model.findOne(3).then(async).catch(asyncErr);
+        });
+        waitsFor(asyncReady);
+        runs(function(){
+          expect(data.name).toBe(fixtures[2].name);
+          expect(data.date).toBe(fixtures[2].date);
+        });
+      });
+
+      // Create
+      it("should return the results in the order they were given (create)", function(){
+        runs(function(){
+          wolfpack.setCreateResults.apply(this, fixtures);
+          Model.create(fixture).then(async).catch(asyncErr);
+        });
+        waitsFor(asyncReady);
+        runs(function(){
+          expect(data.name).toBe(fixtures[0].name);
+          expect(data.date).toBe(fixtures[0].date);
+          asyncReset();
+          Model.create(fixture).then(async).catch(asyncErr);
+        });
+        waitsFor(asyncReady);
+        runs(function(){
+          expect(data.name).toBe(fixtures[1].name);
+          expect(data.date).toBe(fixtures[1].date);
+          asyncReset();
+          Model.create(fixture).then(async).catch(asyncErr);
+        });
+        waitsFor(asyncReady);
+        runs(function(){
+          expect(data.name).toBe(fixtures[2].name);
+          expect(data.date).toBe(fixtures[2].date);
+        });
+      });
+
+      it("should return an the last given result when all previous have been returned (create)", function(){
+        runs(function(){
+          wolfpack.setCreateResults.apply(this, fixtures);
+          Model.create(fixture).then(async).catch(asyncErr);
+        });
+        waitsFor(asyncReady);
+        runs(function(){
+          expect(data.name).toBe(fixtures[0].name);
+          expect(data.date).toBe(fixtures[0].date);
+          asyncReset();
+          Model.create(fixture).then(async).catch(asyncErr);
+        });
+        waitsFor(asyncReady);
+        runs(function(){
+          expect(data.name).toBe(fixtures[1].name);
+          expect(data.date).toBe(fixtures[1].date);
+          asyncReset();
+          Model.create(fixture).then(async).catch(asyncErr);
+        });
+        waitsFor(asyncReady);
+        runs(function(){
+          expect(data.name).toBe(fixtures[2].name);
+          expect(data.date).toBe(fixtures[2].date);
+          asyncReset();
+          Model.create(fixture).then(async).catch(asyncErr);
+        });
+        waitsFor(asyncReady);
+        runs(function(){
+          expect(data.name).toBe(fixtures[2].name);
+          expect(data.date).toBe(fixtures[2].date);
+        });
+      });
+      
+      // Update
+      it("should return the results in the order they were given (update)", function(){
+        function update(model) {
+          model.name = 'Test';
+          model.date = Date('2000-01-01');
+          model.save(function(err, results){
+            async(results);
+          });
+        }
+
+        runs(function(){
+          fixture.id = 1;
+          wolfpack.setUpdateResults.apply(this, fixtures);
+          wolfpack.setFindResults(fixture);
+          Model.findOne(1).then(update);
+        });
+        waitsFor(asyncReady);
+        runs(function(){
+          expect(data.name).toBe(fixtures[0].name);
+          expect(data.date).toBe(fixtures[0].date);
+          asyncReset();
+          Model.findOne(1).then(update);
+        });
+        waitsFor(asyncReady);
+        runs(function(){
+          expect(data.name).toBe(fixtures[1].name);
+          expect(data.date).toBe(fixtures[1].date);
+          asyncReset();
+          Model.findOne(1).then(update);
+        });
+        waitsFor(asyncReady);
+        runs(function(){
+          expect(data.name).toBe(fixtures[2].name);
+          expect(data.date).toBe(fixtures[2].date);
+        });
+      });
+
+      it("should return an the last given result when all previous have been returned (update)", function(){
+        function update(model) {
+          model.name = 'Test';
+          model.date = Date('2000-01-01');
+          model.save(function(err, results){
+            async(results);
+          });
+        }
+
+        runs(function(){
+          fixture.id = 1;
+          wolfpack.setUpdateResults.apply(this, fixtures);
+          wolfpack.setFindResults(fixture);
+          Model.findOne(1).then(update);
+        });
+        waitsFor(asyncReady);
+        runs(function(){
+          expect(data.name).toBe(fixtures[0].name);
+          expect(data.date).toBe(fixtures[0].date);
+          asyncReset();
+          Model.findOne(1).then(update);
+        });
+        waitsFor(asyncReady);
+        runs(function(){
+          expect(data.name).toBe(fixtures[1].name);
+          expect(data.date).toBe(fixtures[1].date);
+          asyncReset();
+          Model.findOne(1).then(update);
+        });
+        waitsFor(asyncReady);
+        runs(function(){
+          expect(data.name).toBe(fixtures[2].name);
+          expect(data.date).toBe(fixtures[2].date);
+          Model.findOne(1).then(update);
+        });
+        waitsFor(asyncReady);
+        runs(function(){
+          expect(data.name).toBe(fixtures[2].name);
+          expect(data.date).toBe(fixtures[2].date);
+        });
+      });
+
     });
 
     it("if a result is provided, it should be given as an instance of the Model", function(){
@@ -541,6 +664,138 @@ describe('Wolfpack', function(){
       expect(Model.setCreateResults).toEqual(Model.wolfpack.setCreateResults);
       expect(Model.setUpdateResults).toEqual(Model.wolfpack.setUpdateResults);
     });
+
+    it("should be able to set find results based in a condition", function(){
+      runs(function(){
+        Model.setFindResults({id:1}, fixtures[0]);
+        Model.setFindResults({name: 'test'}, fixtures[1]);
+        Model.setFindResults({id:1, name: 'test'}, fixtures[2]);
+        Model.find({id:1}).then(async).catch(asyncErr);
+      });
+      waitsFor(asyncReady);
+      runs(function(){
+        expect(data[0].name).toBe(fixtures[0].name);
+        expect(data[0].date).toBe(fixtures[0].date);
+        asyncReset();
+        Model.find({name: 'test'}).then(async);
+      });
+      waitsFor(asyncReady);
+      runs(function(){
+        expect(data[0].name).toBe(fixtures[1].name);
+        expect(data[0].date).toBe(fixtures[1].date);
+        asyncReset();
+        Model.find({name: 'test', id:1}).then(async);
+      });
+      waitsFor(asyncReady);
+      runs(function(){
+        expect(data[0].name).toBe(fixtures[2].name);
+        expect(data[0].date).toBe(fixtures[2].date);
+      });
+    });
+
+    it("should be able to set create results based in a condition", function(){
+      runs(function(){
+        Model.setCreateResults({name: 'test'}, fixtures[0]);
+        Model.setCreateResults({date: new Date('2010-09-09')}, fixtures[1]);
+        Model.setCreateResults({date: new Date('2010-09-09'), name: 'test'}, fixtures[2]);
+        Model.create({name: 'test'}).then(async).catch(asyncErr);
+      });
+      waitsFor(asyncReady);
+      runs(function(){
+        expect(data.name).toBe(fixtures[0].name);
+        expect(data.date).toBe(fixtures[0].date);
+        asyncReset();
+        Model.create({date: new Date('2010-09-09')}).then(async);
+      });
+      waitsFor(asyncReady);
+      runs(function(){
+        expect(data.name).toBe(fixtures[1].name);
+        expect(data.date).toBe(fixtures[1].date);
+        asyncReset();
+        Model.create({date: new Date('2010-09-09'), name: 'test'}).then(async);
+      });
+      waitsFor(asyncReady);
+      runs(function(){
+        expect(data.name).toBe(fixtures[2].name);
+        expect(data.date).toBe(fixtures[2].date);
+      });
+    });
+
+    it("should be able to set update results based in a condition", function(){
+      runs(function(){
+        fixture.id = 1;
+        wolfpack.setFindResults(fixture);
+        Model.setUpdateResults({name: 'test'}, fixtures[0]);
+        Model.setUpdateResults({date: new Date('2010-09-09')}, fixtures[1]);
+        Model.setUpdateResults({date: new Date('2012-01-01'), name: 'test2'}, fixtures[2]);
+        Model.findOne(1).then(function(model){
+          model.name = 'test';
+          model.save(function(err, results){
+            async(results);
+          });
+        });
+      });
+      waitsFor(asyncReady);
+      runs(function(){
+        expect(data.name).toBe(fixtures[0].name);
+        expect(data.date).toBe(fixtures[0].date);
+        asyncReset();
+        Model.findOne(1).then(function(model){
+          model.date = new Date('2010-09-09');
+          model.save(function(err, results){
+            async(results);
+          });
+        });
+      });
+      waitsFor(asyncReady);
+      runs(function(){
+        expect(data.name).toBe(fixtures[1].name);
+        expect(data.date).toBe(fixtures[1].date);
+        asyncReset();
+        Model.findOne(1).then(function(model){
+          model.name = 'test2';
+          model.date = new Date('2012-01-01');
+          model.save(function(err, results){
+            async(results);
+          });
+        });
+      });
+      waitsFor(asyncReady);
+      runs(function(){
+        expect(data.name).toBe(fixtures[2].name);
+        expect(data.date).toBe(fixtures[2].date);
+      });
+    });
+
+    it("if when setting results for a condition, no condition is given, it should throw", function(){
+      var failing = function() {
+        Model.setFindResults(null, fixture);
+      };
+      var failing2 = function() {
+        Model.setCreateResults(null, fixture);
+      };
+      var failing3 = function() {
+        Model.setUpdateResults(null, fixture);
+      };
+      expect(failing).toThrow();
+      expect(failing2).toThrow();
+      expect(failing2).toThrow();
+    });
+
+    it("if when setting results for a condition, no results are given, it should throw", function(){
+      var failing = function() {
+        Model.setFindResults(fixture);
+      };
+      var failing2 = function() {
+        Model.setCreateResults(fixture);
+      };
+      var failing3 = function() {
+        Model.setUpdateResults(fixture);
+      };
+      expect(failing).toThrow();
+      expect(failing2).toThrow();
+      expect(failing2).toThrow();
+    });
   });
 
   describe('legacy support', function(){
@@ -631,8 +886,8 @@ describe('Wolfpack', function(){
         waitsFor(asyncReady);
 
         runs(function(){
-          expect(data[0].name).toBe(fixture.name);
-          expect(data[0].date).toBe(fixture.date);
+          expect(data.name).toBe(fixture.name);
+          expect(data.date).toBe(fixture.date);
         });
       });
 

@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+## 0.3.0
+Adds mocking results conditionally on models
+Supports multiple results on setResult operations
+
+
 ## 0.2.0-rc1
 [#9](https://github.com/fdvj/wolfpack/issues/9)
 Adds support for Sails and Waterline 0.10.x. Not compatible with Sails 0.9.x.
