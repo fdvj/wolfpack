@@ -73,26 +73,29 @@ next sections we are going to see how each component works separately. The previ
 you can do unit testing as well!
 
 ## Table of Contents
-1. [Installation](#installation)
-2. [Usage](#usage)
-3. [API](#api)
-  1. [wolpack](#wolpackpath_to_model)
-  2. [wolfpack().setFindResults](#swolfpacksetfindresultsobject--array-of-objects)
-  3. [wolfpack().setCreateResults](#wolfpacksetcreateresultsobject--array-of-objects)
-  4. [wolfpack().setUpdateResults](#wolfpacksetupdateresultsobject--array-of-objects)
-  5. [wolfpack().clearResults](#wolfpackclearresults)
-  6. [wolfpack().setErrors](#wolfpackseterrorserrors)
-  7. [wolfpack().clearErrors](#wolfpackclearerrors)
-  8. [wolfpack().spy](#wolfpackspyfind--create-update--destroy)
-  9. [wolfpack().resetSpy](#wolfpackresetspyfind--create--update--destroy)
-  10. [wolfpack().resetSpies](#wolfpackresetspies)
-4. [Conditional Mocking of the Results](#mock)
+1. [Installation](https://github.com/fdvj/wolfpack#installation)
+2. [Usage](https://github.com/fdvj/wolfpack#usage)
+3. [API](https://github.com/fdvj/wolfpack#api)
+  1. [wolpack](https://github.com/fdvj/wolfpack#wolfpackpath_to_model)
+  2. [wolfpack.setFindResults](https://github.com/fdvj/wolfpack#wolfpacksetfindresultsobject1-object2-object3-)
+  3. [wolfpack.setCreateResults](https://github.com/fdvj/wolfpack#wolfpacksetcreateresultsobject1--object2-object3-)
+  4. [wolfpack.setUpdateResults](https://github.com/fdvj/wolfpack#wolfpacksetupdateresultsobject1--object2-object3-)
+  5. [wolfpack.clearResults](https://github.com/fdvj/wolfpack#wolfpackclearresults)
+  6. [wolfpack.setErrors](https://github.com/fdvj/wolfpack#wolfpackseterrorserrors)
+  7. [wolfpack.clearErrors](https://github.com/fdvj/wolfpack#wolfpackclearerrors)
+  8. [wolfpack.spy](https://github.com/fdvj/wolfpack#wolfpackspyfind--create-update--destroy)
+  9. [wolfpack.resetSpy](https://github.com/fdvj/wolfpack#wolfpackresetspyfind--create--update--destroy)
+  10. [wolfpack.resetSpies](https://github.com/fdvj/wolfpack#wolfpackresetspies)
+4. [Conditional Mocking of the Results](https://github.com/fdvj/wolfpack#conditional-mocking-of-results)
+  1. [Model.setFindResults](https://github.com/fdvj/wolfpack#modelsetfindresultswhen-result)
+  2. [Model.setCreateResults](https://github.com/fdvj/wolfpack#modelsetcreateresultswhen-result)
+  3. [Model.setUpdateResults](https://github.com/fdvj/wolfpack#modelsetupdateresultswhen-result)
 5. [Examples](#examples)
-  1. [Mocking Model Results](#mocking-model-results)
-  2. [Mocking Errors](#mocking-errors)
-  3. [Testing Sails Controllers](#testing-sails-controllers)
-  4. [Asynchronous Testing](#asynchronous-testing)
-  5. [Testing Sails Models](#testing-sails-models)
+  1. [Mocking Model Results](https://github.com/fdvj/wolfpack#examples)
+  2. [Mocking Errors](https://github.com/fdvj/wolfpack#mocking-model-results)
+  3. [Testing Sails Controllers](https://github.com/fdvj/wolfpack#testing-sails-controllers)
+  4. [Asynchronous Testing](https://github.com/fdvj/wolfpack#asynchronous-testing)
+  5. [Testing Sails Models](https://github.com/fdvj/wolfpack#testing-sails-models)
 
 ## Installation
 
@@ -139,7 +142,7 @@ var wolfpack = require('wolfpack');
 
 var MyModel = wolfpack('path_to_app/api/models/MyModel');
 
-MyModel.find({name: 'test'}).done(function(err, results){
+MyModel.find({name: 'test'}).then(function(results){
   // ... more code ...
 });
 ```
@@ -290,7 +293,7 @@ Same as the other _faker_ methods, all future update results will have this resu
 
 ### wolfpack.clearResults()
 
-The `wolfpack().clearResults` method clears any fake db responses that have been previously set by any or all of the `setFindResults`, `setCreateResults`, and/or `setUpdateResults` methods, no exceptions whatsoever.
+The `wolfpack.clearResults` method clears any fake db responses that have been previously set by any or all of the `setFindResults`, `setCreateResults`, and/or `setUpdateResults` methods, no exceptions whatsoever.
 
 ```javascript
 var wolfpack = require('wolfpack');
@@ -393,7 +396,7 @@ var spy = wolfpack.spy('create');
 
 MyModel.create({name: 'test'}).then(function(results){
   spy.called; // returns true
-  wolfpack().resetSpy('create');
+  wolfpack.resetSpy('create');
   spy.called; // returns false
 });
 ```
@@ -412,7 +415,7 @@ var spy = wolfpack.spy('create');
 
 MyModel.create({name: 'test'}).then(function(results){
   spy.called; // returns true
-  wolfpack().resetSpies();
+  wolfpack.resetSpies();
   spy.called; // returns false
 });
 ```
