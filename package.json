@@ -1,6 +1,6 @@
 {
   "name": "wolfpack",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "SailsJS Model Testing Library",
   "main": "index.js",
   "scripts": {
@@ -27,8 +27,8 @@
     "grunt-contrib-jshint": "~0.6.0",
     "grunt-contrib-uglify": "~0.2.2",
     "grunt-contrib-jasmine": "~0.5.0",
-    "grunt-jasmine-node": "~0.1.0",
-    "grunt-jasmine-node-coverage": "~0.1.4",
+    "grunt-jasmine-node": "^0.2.1",
+    "grunt-jasmine-node-coverage": "^0.1.11",
     "glob": "~3.2.1",
     "grunt-open": "~0.2.0"
   },
