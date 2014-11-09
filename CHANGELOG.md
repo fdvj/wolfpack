@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+## 0.3.1
+Remove leftover debugger in adapter
+Update jasmine libraries
+
 ## 0.3.0
 Adds mocking results conditionally on models
 Supports multiple results on setResult operations
