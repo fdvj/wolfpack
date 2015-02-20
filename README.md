@@ -924,7 +924,7 @@ describe('ChatController', function(){
       Chatroom.addUser.reset();
       
       // Also the send spy as we are gonna be testing different situations
-      response.send();
+      response.send.reset();
 
       // In one test we'll mock errors, so lets reset error states
       wolfpack.clearErrors();
