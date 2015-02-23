@@ -487,7 +487,7 @@ describe('Wolfpack', function(){
 
       runs(function(){
         expect(data.name).toBe(fixture.name);
-        expect(data.date).toBe(fixture.date);
+        expect(data.date.toString()).toBe(fixture.date.toString());
       });
     });
 
@@ -981,7 +981,7 @@ describe('Wolfpack', function(){
 
         runs(function(){
           expect(data.name).toBe(fixture.name);
-          expect(data.date).toBe(fixture.date);
+          expect(data.date.toString()).toBe(fixture.date.toString());
         });
       });
 
