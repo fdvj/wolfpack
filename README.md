@@ -598,7 +598,7 @@ wolfpack gives you the flexibility to work with additional parameters if you lik
 
 ### Mocking Model Results
 
-Wolfpack provides an adapter which mocks a database.  This allows us to predetermine the data we are expecting back from the database, without the need of one.  In other words, we can tell wolfack to give the model certain results when it performs an operation. We do it by using _result operators_, as shown below.
+Wolfpack provides an adapter which mocks a database.  This allows us to predetermine the data we are expecting back from the database, without the need of one.  In other words, we can tell wolfpack to give the model certain results when it performs an operation. We do it by using _result operators_, as shown below.
 
 To set the results for a find operation, we use `wolfpack.setFindResults({results: 'we want'})`.
 
@@ -730,7 +730,7 @@ try {
   console.log(e);  // Still outputing the error
 }
 ```
-We don't always want to test the error. By setting the errors, all CRUD operations will return with an error.  If we want to clear the errors, wolfack provides us a function to do so called `clearErrors`.
+We don't always want to test the error. By setting the errors, all CRUD operations will return with an error.  If we want to clear the errors, wolfpack provides us a function to do so called `clearErrors`.
 
 ```javascript
 var wolfpack = require('wolfpack');
