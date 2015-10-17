@@ -191,7 +191,12 @@ describe('Wolfpack', function(){
      
       runs(function(){
         wolfpack.setFindResults(fixture);
-        Model.findOne(1).then(async).catch(asyncErr);
+        try {
+          Model.findOne(1).then(async).catch(asyncErr);
+        } catch (e) {
+          console.log(e.stack);
+        }
+        
       });
 
       waitsFor(asyncReady);
@@ -689,10 +694,10 @@ describe('Wolfpack', function(){
 
     it("should be able to set find results based in a condition", function(){
       runs(function(){
-        Model.setFindResults({id:1}, fixtures[0]);
+        Model.setFindResults({id:'1'}, fixtures[0]);
         Model.setFindResults({name: 'test'}, fixtures[1]);
-        Model.setFindResults({id:1, name: 'test'}, fixtures[2]);
-        Model.find({id:1}).then(async).catch(asyncErr);
+        Model.setFindResults({id:'1', name: 'test'}, fixtures[2]);
+        Model.find({id:'1'}).then(async).catch(asyncErr);
       });
       waitsFor(asyncReady);
       runs(function(){

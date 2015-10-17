@@ -1,6 +1,6 @@
 {
   "name": "wolfpack",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "SailsJS Model Testing Library",
   "main": "index.js",
   "scripts": {
@@ -44,6 +44,6 @@
       "semantic",
       "queryable"
     ],
-    "waterlineVersion": "~0.10.0"
+    "waterlineVersion": "~0.10.26"
   }
 }
