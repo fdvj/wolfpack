@@ -133,7 +133,7 @@ The best part of this is that wolfpack, by default, spies on ALL methods, whethe
 
 ## API
 
-### wolfpack('path_to_model')
+### wolfpack('path_to_model', [pk_type])
 
 The wolfpack constructor allows you to instantiate a spied upon Sails model. You use it by calling `wolfpack('path_to_model' || object)` and pass as an argument either a string with the location of the model, or an object from which to build the model. All class and instance methods are spied on with [SinonJS spies](http://sinonjs.org/docs/#spies-api). Once instantiated, you can make your usual model calls.
 
@@ -157,6 +157,10 @@ global.MyModel = wolfpack('path_to_app/api/models/MyModel');
 // You can now load your controller and it will have access to your wolfpack instantiated model
 var MyController = require('path_to_app/api/controllers/MyController');
 ```
+
+Additionally, to support testing of both NoSQL and SQL dbs, you can pass a second argument which determines the type of the id of the entry. For example, in mongo db, ids are strings, whereas in MySQL ids are integers.
+
+When testing, these id differences may cause wolfpack to yield false results on find operations. By default, wolfpack sets up *integer* as the default type for id. However, if you are working in mongo, you can set it up to *string*.
 
 For more information and examples on how to test, please go forward and read the examples sections, where we present several samples on how to use wolpack to test controllers, model classes, and instances of models.
 
