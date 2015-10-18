@@ -694,10 +694,10 @@ describe('Wolfpack', function(){
 
     it("should be able to set find results based in a condition", function(){
       runs(function(){
-        Model.setFindResults({id:'1'}, fixtures[0]);
+        Model.setFindResults({id:1}, fixtures[0]);
         Model.setFindResults({name: 'test'}, fixtures[1]);
-        Model.setFindResults({id:'1', name: 'test'}, fixtures[2]);
-        Model.find({id:'1'}).then(async).catch(asyncErr);
+        Model.setFindResults({id:1, name: 'test'}, fixtures[2]);
+        Model.find({id:1}).then(async).catch(asyncErr);
       });
       waitsFor(asyncReady);
       runs(function(){
@@ -712,6 +712,35 @@ describe('Wolfpack', function(){
         expect(data[0].date).toBe(fixtures[1].date);
         asyncReset();
         Model.find({name: 'test', id:1}).then(async);
+      });
+      waitsFor(asyncReady);
+      runs(function(){
+        expect(data[0].name).toBe(fixtures[2].name);
+        expect(data[0].date).toBe(fixtures[2].date);
+      });
+    });
+
+    it("should be able to set find results based in a condition for models with an id of string type", function(){
+      var ModelString = wolfpack(__dirname + '/../fixtures/Model', 'string');
+      runs(function(){
+        ModelString.setFindResults({id:'1'}, fixtures[0]);
+        ModelString.setFindResults({name: 'test'}, fixtures[1]);
+        ModelString.setFindResults({id:'1', name: 'test'}, fixtures[2]);
+        ModelString.find({id:'1'}).then(async).catch(asyncErr);
+      });
+      waitsFor(asyncReady);
+      runs(function(){
+        expect(data[0].name).toBe(fixtures[0].name);
+        expect(data[0].date).toBe(fixtures[0].date);
+        asyncReset();
+        ModelString.find({name: 'test'}).then(async);
+      });
+      waitsFor(asyncReady);
+      runs(function(){
+        expect(data[0].name).toBe(fixtures[1].name);
+        expect(data[0].date).toBe(fixtures[1].date);
+        asyncReset();
+        ModelString.find({name: 'test', id:1}).then(async);
       });
       waitsFor(asyncReady);
       runs(function(){
