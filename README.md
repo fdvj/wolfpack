@@ -2,6 +2,7 @@ Wolfpack
 ========
 
 [![Build Status](https://travis-ci.org/fdvj/wolfpack.svg?branch=master)](https://travis-ci.org/fdvj/wolfpack) [![npm version](https://badge.fury.io/js/wolfpack.svg)](http://badge.fury.io/js/wolfpack)
+[![Known Vulnerabilities](https://snyk.io/test/github/fdvj/wolfpack/badge.svg)](https://snyk.io/test/github/fdvj/wolfpack)
 
 __Wolfpack helps you test your SailsJS models without the need for a db or lifting your sails app.__
 
